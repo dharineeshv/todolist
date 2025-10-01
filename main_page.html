@@ -341,6 +341,7 @@ add_btn.addEventListener('click',(e)=>
 )
 })
 onValue(datas_db, (snapshot) => {
+    getInputContainer.innerHTML = ""; 
    if (snapshot.exists()) {
      const users = snapshot.val();
      for(let key in users)
@@ -398,6 +399,7 @@ function createTaskElement(taskValue,keys)
 
 }
 </script>
+
 
 
 
