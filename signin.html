@@ -3,214 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
     <title>To-Do-List_App</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(to top, aqua, purple);
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: stretch;
+            width: 90%;
+            max-width: 1200px;
+        }
+
+        .first-field,
+        .second-field {
+            flex: 1 1 300px; /* Grow, shrink, min-width */
+            min-width: 300px;
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .first-field {
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .second-field {
+            background-color: rgba(108, 108, 242, 0.8);
+            color: white;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: blue;
+            margin-bottom: 10px;
+        }
+
+        .second-field h1 {
+            color: white;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+
+        p {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .second-field p {
+            color: white;
+        }
+
+        input {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+            background-color: rgba(172, 165, 165, 0.2);
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+            font-size: 1rem;
+        }
+
+        button {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px;
+            margin-top: 20px;
+            border-radius: 5px;
+            background-color: rgba(0, 0, 255, 0.8);
+            color: white;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: blue;
+        }
+
+        #one {
+            margin-top: 20px;
+        }
+
+        #one a {
+            color: blue;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        #one a:hover {
+            color: black;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .first-field,
+            .second-field {
+                width: 90%;
+                min-width: auto;
+            }
+
+            input,
+            button {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <div class="first-field">
-               <h1>Welcome Back</h1>
-               <p>Sign in to acces your tasks Let's stay productive and acheive your goals today!</p>
-               <input type="email" placeholder="E-mail" id="email">
-               <input type="password" placeholder="Password" id="password">
-               <button id="signinBtn">SIGN IN</button>
-               <p id="one">Don't have an account? <a href="index.html" id="btn"><b>Sign up</b></a></p>
+            <h1>Welcome Back</h1>
+            <p>Sign in to access your tasks. Let's stay productive and achieve your goals today!</p>
+            <input type="email" placeholder="E-mail" id="email">
+            <input type="password" placeholder="Password" id="password">
+            <button id="signinBtn">SIGN IN</button>
+            <p id="one">Don't have an account? <a href="index.html"><b>Sign up</b></a></p>
         </div>
+
         <div class="second-field">
-            <h1>Ready toConquer Your Day?!</h1>
-            <p>Sign in and start organized your taks effecively.Stay focused your day,and achieve more.</p>            
+            <h1>Ready to Conquer Your Day?!</h1>
+            <p>Sign in and organize your tasks effectively. Stay focused, and achieve more.</p>
         </div>
     </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
+
+        const appSetting = { databaseURL: "https://to-do-list-51c07-default-rtdb.firebaseio.com/" }
+        const app = initializeApp(appSetting)
+        const database = getDatabase(app)
+        const name_db = ref(database,"users")
+
+        const btn = document.querySelector("#signinBtn");
+
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const email = document.querySelector("#email").value.trim();
+            const password = document.querySelector("#password").value.trim();
+
+            onValue(name_db, (snapshot) => {
+                let found = false;
+
+                if (snapshot.exists()) {
+                    const users = snapshot.val();
+                    for (let key in users) {
+                        if(users[key].useremail === email && users[key].userpassword === password){
+                            found = true;
+                            localStorage.setItem("username", users[key].username);
+                            localStorage.setItem("email", email);
+                            break;
+                        }
+                    }
+
+                    if(found) {
+                        alert("Signed in successfully!");
+                        window.location.href = "main_page.html";
+                    } else {
+                        alert("Email or password is incorrect");
+                    }
+                } else {
+                    alert("Please log in");
+                }
+            })
+        });
+    </script>
 </body>
 </html>
-<style>
-*
-{
-    padding:0;
-    margin:0;
-}
-body {
-    display:flex;
-    height:100vh;
-    justify-content: center;
-    align-items: center;
-    background:linear-gradient(to top,aqua,purple);
-}
-.container
-{
-    display:flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-
-}
-.second-field
-{
-    display:flex;
-    flex-direction: column;
-    border:1px solid;
-    width:30vw;
-    height:50vh;
-    background-color:rgba(108, 108, 242, 0.792);
-    border-radius: 10px;
-    margin:0.1px;
-    padding:10px;
-    align-items: center;
-}
-.first-field
-{
-    display:flex;
-    flex-direction: column;
-    border:1px solid;
-    border-radius: 10px;
-    
-     width:30vw;
-    height:50vh;
-    margin:0.1px;
-    align-items: center;
-    background-color: white;
-    padding:10px;
-   
-}
-h1{
-    text-align: center;
-    color:blue;
-}
-p{
-    text-align: center;
-    margin-right:10px;
-}
-input{
-     width:25vw;
-    padding:10px;
-    border-radius: 5px;
-    margin-top:20px;
-    background-color:rgba(172, 165, 165, 0.186);
-    border:0px solid black;
-    box-shadow: 1px .1px .1px;
-    
-}
-button {
-    width:25vw;
-    margin-top:30px;
-    border-radius: 5px;
-
-    padding:8px;
-    background-color: rgba(0, 0, 255, 0.786);
-    color:white;
-    border:0px solid white;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-}
-#one{
-    margin-top:5vh;
-}
-a {
-    text-decoration: none;
-    
-}
-#one a {
-    color:blue;
-}
-#one a:hover {
-    color:black;
-}
-button:hover {
-    
-    background-color: blue;
-}
-p{
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-}
-@media (max-width: 700px) {
-  .container {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .first-field,
-  .second-field {
-    width: 90%;       /* same width */
-    min-height: 40vh; /* same height for both */
-    height: auto;     /* allow content to grow */
-  }
-
-  input,
-  button {
-    width: 90%; /* inputs/buttons expand on mobile */
-  }
-}
-.second-field h1 {
-   color:white;
-   margin-top:10vh;
-   font-style: italic;
-}
-.second-field p{
-      margin-top:2vh;
- color:white;
-}
-.second-field i,a {
-    color:white;
-    margin-top:2vh;
-}
-.second-field a {
-    text-decoration:underline;
-}
-.second-field a:hover {
-    color:black;
-}
-
-</style>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
-
-let appSetting = {
-    databaseURL: "https://to-do-list-51c07-default-rtdb.firebaseio.com/"
-}
-const app = initializeApp(appSetting)
-const database = getDatabase(app)
-const name_db = ref(database,"users")
-
-
-let email = document.querySelector("#email").value.trim()
-let password = document.querySelector("#password").value.trim()
-const btn = document.querySelector("#signinBtn");
-
-btn.addEventListener("click",clicked)
-function clicked(e)
-{
-     e.preventDefault()
-      email = document.querySelector("#email").value.trim();
-      password = document.querySelector("#password").value.trim();
-        onValue(name_db, (snapshot) => {
-        let found = false;
-
-        if (snapshot.exists()) {
-            const users = snapshot.val();
-            let found=false
-            for(let key in users)
-            {
-                if(users[key].useremail===email && users[key].userpassword === password){
-                       found = true;
-                       localStorage.setItem("username",users[key].username);
-                       localStorage.setItem("email",email);
-                       break 
-                }
-            }
-            if(found)
-            {
-                alert("Signed......")
-                 window.location.href = "main_page.html";
-
-            }
-            else{
-                alert("Email or password is incorrect")
-            }
-      }
-      else
-      {
-        alert("Please Log in")
-      }
-      
-})
-}
-</script>
