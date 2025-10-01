@@ -42,7 +42,7 @@
 </body>
 </html>
 <style>
-    /* Base Styles */
+/* Base Styles */
 * {
     padding: 0;
     margin: 0;
@@ -55,20 +55,26 @@ body {
     font-family: Arial, sans-serif;
 }
 
+/* Container (Header Row) */
 .container {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center; /* vertically center items */
     padding: 20px;
     margin: 50px;
     background-color: white;
     box-shadow: 1px 0.1px 2px 0.1px rgba(0,0,0,0.2);
     border-radius: 5px;
+    flex-wrap: nowrap; /* prevent wrapping */
+    gap: 10px;
 }
 
 #content {
     display: flex;
     flex-direction: column;
+    flex-shrink: 1; /* allow shrinking to fit smaller screens */
+    min-width: 0; /* prevent overflowing */
 }
 
 i {
@@ -80,10 +86,12 @@ i {
 }
 
 .account-box {
-    padding: 7px;
     display: flex;
     align-items: center;
     gap: 5px;
+    flex-shrink: 0; /* prevent shrinking too much */
+    min-width: 120px; /* minimum width for dropdown */
+    padding: 7px;
     background-color: white;
     box-shadow: 1px 0.1px 2px 0.1px rgba(0,0,0,0.2);
     border-radius: 4px;
@@ -120,6 +128,7 @@ select {
     border-radius: 5px;
 }
 
+/* Button Styles */
 button {
     background-color: blue;
     border: none;
@@ -138,6 +147,7 @@ button i {
     color: white;
 }
 
+/* Input fields */
 input.task-input {
     padding: 10px;
     border: 2px solid black;
@@ -155,10 +165,14 @@ input.task-input {
 
 /* Responsive for tablets */
 @media screen and (max-width: 768px) {
-    .container, .second-container {
-        flex-direction: column;
+    .container {
+        flex-direction: row; /* keep first row in one line */
         margin: 20px;
         padding: 15px;
+    }
+
+    #content {
+        margin-bottom: 0; /* remove bottom margin */
     }
 
     .one {
@@ -181,12 +195,12 @@ input.task-input {
     }
 
     .account-box {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row; /* keep icon + select in row */
+        align-items: center;
     }
 
     select {
-        width: 100%;
+        width: auto; /* allow shrinking */
     }
 }
 
@@ -218,6 +232,7 @@ input.task-input {
         gap: 8px;
     }
 }
+
 
 </style>
 
@@ -383,5 +398,6 @@ function createTaskElement(taskValue,keys)
 
 }
 </script>
+
 
 
