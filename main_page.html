@@ -42,114 +42,185 @@
 </body>
 </html>
 <style>
-    *
-    {
-        padding:0;
-        margin:0;
-        box-sizing: border-box;
-    }
-    .one {
-        display:flex;
-        justify-content: space-between;
-        
-    }
-    .two {
-        display:flex;
-        justify-content: space-between;
-        flex-direction: column;
-        margin-top:20px;
-        background-color: whitesmoke;
+    /* Base Styles */
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
 
-    }
-    .container {
-        display:flex;
-        flex-direction: row;
-        justify-content: space-between;
-        padding:20px;
-        border:1px solid black;
-        margin-top:10px;
-        background-color: white;
-        border:none;
-        box-shadow: 1px .1px 2px .1px;
-        margin:50px;
-        border-radius: 5px;
-        
+body {
+    background-color: rgb(212, 218, 229);
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+}
 
-    }
-     #content {
-        display:flex;
-        flex-direction: column;
-     }
-     body {
-        background-color: rgb(212, 218, 229);
-        
-        height: 100vh;
-       
-     }
-     .container h1 {
-        color:blue;
-     }
-     .account-box{
-        padding:7px;
-        border:1px solid black;
-        box-shadow: 1px .1px 2px .1px;
-        border:none;
-        border-radius:4px;
-        display:flex;
-         align-items: center;   /* vertically centers icon & select */
-         gap: 2px; 
-        
-     }
-     select{
-        border:none;
-     }
-    i 
-    {
-        color:blue;
-         
-    }
-.second-container {
-   
-    margin:50px;
-    padding:20px;
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 20px;
+    margin: 50px;
     background-color: white;
-    border:none;
-    box-shadow: 1px .1px 2px .1px;
+    box-shadow: 1px 0.1px 2px 0.1px rgba(0,0,0,0.2);
     border-radius: 5px;
 }
-button{
+
+#content {
+    display: flex;
+    flex-direction: column;
+}
+
+i {
+    color: blue;
+}
+
+.container h1 {
+    color: blue;
+}
+
+.account-box {
+    padding: 7px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: white;
+    box-shadow: 1px 0.1px 2px 0.1px rgba(0,0,0,0.2);
+    border-radius: 4px;
+}
+
+select {
+    border: none;
+    background: none;
+}
+
+/* Second Container */
+.second-container {
+    margin: 50px;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 1px 0.1px 2px 0.1px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+
+.one {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.two {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+    background-color: whitesmoke;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+button {
     background-color: blue;
-    border:none;
-    width:100px;
-    border-radius:5px;
-    color:white;
-    display:flex;
+    border: none;
+    width: 120px;
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+    display: flex;
     justify-content: center;
     align-items: center;
-    gap:10px;
+    gap: 10px;
+    cursor: pointer;
+}
 
-}
 button i {
-    color:white;
-    
+    color: white;
 }
-h1{
-    color:blue;
+
+input.task-input {
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 3px;
+    flex: 1;
 }
-.third-container {
-    background-color: white;
-    display:flex;
-    justify-content: space-between;
-    
-    margin-top:0;
-    padding:20px;
-    background-color: white;
-    border:none;
-    box-shadow: 1px .1px 2px .1px;
-    border-radius: 5px; 
+
+/* Icons inside tasks */
+.fa-solid.fa-square-pen,
+.fa-solid.fa-trash,
+.fa-solid.fa-circle-check {
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+/* Responsive for tablets */
+@media screen and (max-width: 768px) {
+    .container, .second-container {
+        flex-direction: column;
+        margin: 20px;
+        padding: 15px;
+    }
+
+    .one {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    .get_input {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    input.task-input {
+        width: 100%;
+    }
+
+    .account-box {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    select {
+        width: 100%;
+    }
+}
+
+/* Responsive for mobile phones */
+@media screen and (max-width: 480px) {
+    h1 {
+        font-size: 1rem;
+    }
+
+    button {
+        font-size: 0.9rem;
+    }
+
+    input.task-input {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+
+    .fa-solid {
+        font-size: 1rem;
+    }
+
+    .container, .second-container {
+        margin: 10px;
+        padding: 10px;
+    }
+
+    .one, .two {
+        gap: 8px;
+    }
 }
 
 </style>
+
 <script src="https://kit.fontawesome.com/6045d1d2eb.js" crossorigin="anonymous"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
@@ -312,101 +383,5 @@ function createTaskElement(taskValue,keys)
 
 }
 </script>
-<style>
-    .get-input
-    {
-    display:flex;
-   
-    justify-content: space-between;
-    padding: 10px;
-    width: 30vw;
-    border: none;
-    background-color: whitesmoke;
-    margin-top:20px;
-    
-    }
-    .fa-solid.fa-square-pen,.fa-solid.fa-trash
-    {
-         margin:10px;
-         font-size: larger;
 
-    }
-input{
-     border:none;
-     padding:20px;
-     border:2px solid black;
-     border-radius: 2px;
-}
-/* Responsive for mobile devices */
-@media screen and (max-width: 768px) {
-    .container {
-        flex-direction: column;
-        margin: 20px;
-        padding: 15px;
-    }
 
-    #content {
-        margin-bottom: 10px;
-    }
-
-    .second-container {
-        margin: 20px;
-        padding: 15px;
-    }
-
-    .one {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    button {
-        width: 100%;
-        justify-content: center;
-        padding: 10px;
-    }
-
-    .get_input {
-        flex-direction: column;
-        width: 100%;
-    }
-
-    input.task-input {
-        width: 100%;
-        padding: 15px;
-    }
-
-    .two {
-        flex-direction: column;
-        margin-top: 15px;
-    }
-
-    .account-box {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 5px;
-    }
-
-    select {
-        width: 100%;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    h1 {
-        font-size: 1.2rem;
-    }
-
-    button {
-        font-size: 0.9rem;
-    }
-
-    .fa-solid {
-        font-size: 1rem;
-    }
-
-    input.task-input {
-        font-size: 0.9rem;
-    }
-}
-
-</style>
