@@ -127,14 +127,19 @@
    
 </body>
 </html>
-<style>
-/* Base Styles */
+    <style>
+    
+  /* Base Styles */
 * {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
 }
 
+.fa-solid.fa-plus
+{
+    color:white;
+}
 select {
     border: none;
 }
@@ -162,7 +167,7 @@ i {
     box-shadow: 1px 0.1px 2px 0.1px rgba(0,0,0,0.2);
     border-radius: 5px;
     gap: 10px;
-    flex-wrap: wrap; /* allow wrapping on small screens */
+    flex-wrap: wrap;
 }
 
 #content {
@@ -189,37 +194,39 @@ i {
     max-width: 1200px;
     background-color: white;
     box-shadow: 1px 0.1px 2px 0.1px rgba(0,0,0,0.2);
-    border-radius: 5px;
+    border-radius: 10px; /* match mobile style */
 }
 
 .dashboard h1 {
-    color: blue;
-    text-align: center;
+    color: #1e3a8a; /* blue similar to screenshot */
+    text-align: left;
+    margin-bottom: 15px;
 }
 
 #values {
     display: flex;
     justify-content: space-between;
-    gap: 15px;
+    gap: 10px;
     margin-top: 10px;
     flex-wrap: wrap;
 }
 
 .box {
-    flex: 1 1 30%;
+    flex: 1 1 32%; /* 3 boxes in a row */
     min-width: 120px;
+    height: 80px; /* match mobile screenshot height */
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 70px;
+    padding: 10px;
 }
 
-/* Box Colors */
-#box1 { background-color: rgba(0, 0, 255, 0.284); }
-#box2 { background-color: rgba(0, 255, 98, 0.24); }
-#box3 { background-color: rgba(191, 255, 0, 0.318); }
+/* Box Colors (backgrounds optional for now) */
+#box1 { background-color: #e0f2fe; } /* light blue */
+#box2 { background-color: #dcfce7; } /* light green */
+#box3 { background-color: #fef9c3; } /* light yellow */
 
 /* Second Container */
 .second-container {
@@ -228,7 +235,7 @@ i {
     max-width: 1200px;
     background-color: white;
     box-shadow: 1px 0.1px 2px 0.1px rgba(0,0,0,0.2);
-    border-radius: 5px;
+    border-radius: 10px;
 }
 
 /* Buttons Row */
@@ -287,13 +294,8 @@ button {
     border: none;
 }
 
-#add {
-    background-color: blue;
-}
-
-#clear-all {
-    background-color: red;
-}
+#add { background-color: #1e3a8a; }
+#clear-all { background-color: #ef4444; }
 
 /* Input fields */
 input.task-input {
@@ -313,7 +315,6 @@ input.task-input {
 
 /* Responsive */
 @media screen and (max-width: 768px) {
-
     .container, .dashboard, .second-container {
         margin: 10px;
         padding: 15px;
@@ -324,7 +325,7 @@ input.task-input {
     }
 
     .box {
-        height: 60px;
+        height: 70px;
         font-size: 0.9rem;
     }
 
@@ -341,12 +342,33 @@ input.task-input {
     }
 }
 
-/* Mobile: stack dashboard boxes vertically */
+/* Mobile: top container same row + dashboard stacked column */
 @media screen and (max-width: 480px) {
 
+    /* Keep header items in same row */
+    .container {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #content {
+        flex-direction: column;
+    }
+
+    .account-box {
+        margin-top: 0;
+    }
+
+    /* Stack dashboard boxes vertically */
     #values {
-        flex-direction: column; /* stack boxes vertically */
+        flex-direction: column;
         gap: 10px;
+    }
+
+    .box {
+        width: 100%;
+        height: 70px; /* match screenshot height */
     }
 
     .one {
@@ -362,18 +384,11 @@ input.task-input {
     .buttons button {
         width: 48%;
     }
-
-    .container {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .account-box {
-        margin-top: 10px;
-    }
 }
 
+
 </style>
+
 
 <script src="https://kit.fontawesome.com/6045d1d2eb.js" crossorigin="anonymous"></script>
 <script type="module">
@@ -914,6 +929,7 @@ function createTaskElement(taskValue,keys)
      }
     })
 </script>
+
 
 
 
