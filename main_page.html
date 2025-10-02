@@ -39,7 +39,13 @@
                     <p>Pending</p>
                     <b id="pending">0</b>
                  </div>
+        <div class="container-2">
+            <div class="progress">
+                   <div class="progress-bar"><p>0%</p></div>
             </div>
+        </div>
+
+    </div>
 </div>
     <div class="second-container">
     <div class="one">
@@ -70,6 +76,41 @@
     margin: 0;
     box-sizing: border-box;
 }
+
+.container-2 {
+    display: flex;
+    justify-content: center; /* center horizontally */
+    align-items: center;     /* center vertically (optional) */
+    margin-top: 20px;        /* spacing from above */
+    width: 100%;
+}
+.progress-bar p 
+{
+    text-align: center;
+}
+
+.progress {
+    width: 60%; /* keep it smaller than full width */
+    max-width: 500px; /* prevent it from being too wide on big screens */
+    background-color: aliceblue;
+    border-radius: 12px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+    overflow: hidden;
+}
+
+
+    /* Progress fill */
+    .progress-bar {
+        height: 25px;
+        width: 0;
+        background: linear-gradient(90deg, #3b82f6, #2563eb);
+        border-radius: 8px;
+        text-align: center;
+        line-height: 25px;
+        color: black;
+        text-align: center;
+        font-weight: bold;
+    }
 
 .fa-solid.fa-plus
 {
@@ -419,6 +460,8 @@ if (a.getHours() >= 12) {
 
      }
     })
+
+
 let accountSelect = document.querySelector('#account');
 let email = localStorage.getItem("email")
 accountSelect.addEventListener('change', (e) => {
@@ -514,6 +557,7 @@ add_btn.addEventListener('click',(e)=>
 }
 )
 });
+
 onValue(datas_db, (snapshot) => {
     let pending = 0;
     let task_count = 0;
@@ -537,6 +581,25 @@ onValue(datas_db, (snapshot) => {
         document.querySelector('#task').innerHTML = task_count;
         document.querySelector('#pending').innerHTML = pending;
         document.querySelector('#completed').innerHTML = task_count - pending;
+        const progressBar = document.querySelector(".progress-bar");
+        
+        let current = 0;
+        let speed = 20;
+        let v = task_count === 0 ? 0 : Math.round(((task_count - pending) / task_count) * 100);
+        let fill = setInterval(()=>
+        {
+            if(current>=v)
+            {
+                clearInterval(fill)
+            }
+            else
+            {
+                current++;
+                progressBar.style.width = current + "%"
+                progressBar.textContent = current + "%"
+                
+            }
+        },speed)
     }
 });
 
@@ -562,6 +625,26 @@ clear_all_button.addEventListener('click', () => {
     document.querySelector('#task').innerHTML = 0;
     document.querySelector('#pending').innerHTML = 0;
     document.querySelector('#completed').innerHTML = 0;
+    const progressBar = document.querySelector(".progress-bar");
+    let value =  parseInt(progressBar.textContent) || 0;
+    let current=0
+    let speed = 30;
+    let fill = setInterval(()=>
+        {
+            if(value<=0)
+            {
+                clearInterval(fill)
+            }
+            else
+            {
+                value--;
+                progressBar.style.width = value + "%"
+                progressBar.textContent = value + "%"
+                
+            }
+        },speed)
+
+
 });
 
 function createTaskElement(taskValue, key, completed) {
@@ -651,8 +734,8 @@ function createTaskElement(taskValue, key, completed) {
 
      }
     })
-</script>
 
+</script>
 
 
 
