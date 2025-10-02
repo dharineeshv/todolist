@@ -47,39 +47,47 @@ const app = initializeApp(appSetting)
 const database = getDatabase(app)
 const name_db = ref(database,"users")
 
-let name = document.querySelector("#name")
-let email = document.querySelector("#email").value
-let password = document.querySelector("#password")
+
+
 const createBtn = document.querySelector("button");
-
-
+let name = document.querySelector("#name")
+let email = document.querySelector("#email")
+let password = document.querySelector("#password")
 
 createBtn.addEventListener("click", (e) => {
     e.preventDefault(); 
-    const details= {
-        username : name.value,
-        useremail: email.value,
-        userpassword:password.value
-    }
-    push(name_db,details);    
-})
-onValue(name_db, (snapshot) => {
-                let found = false;
 
-                if (snapshot.exists()) {
-                    const users = snapshot.val();
-                    for(let key in users)
-                    {
-                        if(users[key].useremail===email)
-                        {
-                            alert("Email Is already Registered!!!")
-                            return;
-                        }
-                    }
+    const details = {
+        username: name.value,
+        useremail: email.value,
+        userpassword: password.value
+    };
+
+    onValue(name_db, (snapshot) => {
+        let emailExists = false;
+
+        if (snapshot.exists()) {
+            const users = snapshot.val();
+            for (let key in users) {
+                if (users[key].useremail === details.useremail) {
+                    emailExists = true;
+                    break;
                 }
             }
-)
+        }
 
+        if (emailExists) {
+            alert("Email is already registered!!!");
+        } else {
+            push(name_db, details); 
+            alert("Account created successfully!");
+            window.location.href = "signin.html";
+
+        }
+    }, { onlyOnce: true }); // ✅ pass onlyOnce correctly
+});
+
+ 
 
 </script>
 <style>
