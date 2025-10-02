@@ -73,10 +73,6 @@
 select{
     border:none;
 }
-#clear-all {
-    background-color: red;
-    color: white;
-}
 
 body {
     background-color: rgb(212, 218, 229);
@@ -95,12 +91,13 @@ i {
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    margin: 50px;
+    margin: 20px auto;
+    max-width: 1200px;
     background-color: white;
     box-shadow: 1px 0.1px 2px 0.1px rgba(0,0,0,0.2);
     border-radius: 5px;
     gap: 10px;
-    flex-wrap: nowrap; /* prevent wrapping */
+    flex-wrap: wrap; /* allow wrapping on small screens */
 }
 
 #content {
@@ -116,7 +113,6 @@ i {
     background-color: white;
     box-shadow: 1px 0.1px 2px 0.1px rgba(0,0,0,0.2);
     border-radius: 4px;
-    flex-shrink: 0;
 }
 
 /* Dashboard */
@@ -124,7 +120,8 @@ i {
     display: flex;
     flex-direction: column;
     padding: 20px;
-    margin: 50px;
+    margin: 20px auto;
+    max-width: 1200px;
     background-color: white;
     box-shadow: 1px 0.1px 2px 0.1px rgba(0,0,0,0.2);
     border-radius: 5px;
@@ -137,23 +134,21 @@ i {
 
 #values {
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
     gap: 15px;
     margin-top: 10px;
-    flex-wrap: nowrap; /* prevent wrapping on mobile */
-    overflow-x: auto;
+    flex-wrap: wrap; /* wrap boxes if screen is too small */
 }
 
 .box {
+    flex: 1 1 30%; /* grow/shrink, min 30% of container */
+    min-width: 120px;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 70px;
-    flex: 1; /* equal width */
-    min-width: 100px; /* prevent too small on mobile */
 }
 
 #box1 { background-color: rgba(0, 0, 255, 0.284); }
@@ -162,8 +157,9 @@ i {
 
 /* Second Container */
 .second-container {
-    margin: 50px;
+    margin: 20px auto;
     padding: 20px;
+    max-width: 1200px; /* same width as dashboard */
     background-color: white;
     box-shadow: 1px 0.1px 2px 0.1px rgba(0,0,0,0.2);
     border-radius: 5px;
@@ -175,21 +171,22 @@ i {
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    flex-wrap: nowrap; /* keep buttons in single row */
+    flex-wrap: wrap; /* allow wrapping on very small screens */
 }
 
 .one h1 {
-    flex: 1; /* push buttons to right */
+    flex: 1;
+    min-width: 150px;
 }
 
 .buttons {
     display: flex;
     gap: 10px;
-    flex-wrap: nowrap; /* prevent wrapping */
+    flex-wrap: wrap; /* keep buttons visible on small screens */
 }
 
 .buttons button {
-    flex: 1; /* equal width */
+    flex: 1 1 auto;
     min-width: 120px;
 }
 
@@ -211,7 +208,7 @@ i {
     border-radius: 5px;
 }
 
-/* Button Styles */
+/* Buttons */
 button {
     padding: 10px;
     border-radius: 5px;
@@ -224,13 +221,14 @@ button {
     border: none;
 }
 
-button i {
-    color: white;
-}
-#add
-{
+#add {
     background-color: blue;
 }
+
+#clear-all {
+    background-color: red;
+}
+
 /* Input fields */
 input.task-input {
     padding: 10px;
@@ -247,40 +245,21 @@ input.task-input {
     font-size: 1.2rem;
 }
 
-/* Responsive for mobile phones */
-@media screen and (max-width: 480px) {
+/* Responsive */
+@media screen and (max-width: 768px) {
 
-    .container {
-        margin: 10px;
-        padding: 10px;
-        gap: 5px;
-    }
-
-    #content {
-        flex: 1;
-    }
-
-    .account-box {
-        min-width: 100px;
-    }
-
-    .dashboard {
+    .container, .dashboard, .second-container {
         margin: 10px;
         padding: 15px;
     }
 
     #values {
-        gap: 5px;
+        gap: 10px;
     }
 
     .box {
         height: 60px;
         font-size: 0.9rem;
-    }
-
-    .second-container {
-        margin: 10px;
-        padding: 15px;
     }
 
     .one h1 {
@@ -293,6 +272,28 @@ input.task-input {
 
     .buttons {
         gap: 5px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+
+    #values {
+        flex-direction: column; /* stack boxes vertically on very small screens */
+        gap: 10px;
+    }
+
+    .one {
+        flex-direction: column; /* stack title and buttons if needed */
+        align-items: flex-start;
+    }
+
+    .buttons {
+        width: 100%;
+        gap: 10px;
+    }
+
+    .buttons button {
+        width: 48%;
     }
 }
 
