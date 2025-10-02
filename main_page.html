@@ -16,7 +16,7 @@
             <h1>Todo List</h1>
         </div>
         
-           <div class="account-box">
+    <div class="account-box">
    <i class="fa-solid fa-circle-user"></i>
      <select name="account" id="account">
        <option id="account1"></option>
@@ -24,10 +24,31 @@
    </select>
 </div>
 </div>
+<div class="dashboard">
+            <h1>Dashboard</h1>
+            <div id="values">
+                 <div class="box" id="box1">
+                      <p>Your Tasks</p>
+                      <b id="task">0</b>
+                 </div>
+                 <div class="box" id="box2">
+                     <p>Completed</p>
+                     <b id="completed">0</b>
+                 </div>
+                 <div class="box" id="box3">
+                    <p>Pending</p>
+                    <b id="pending">0</b>
+                 </div>
+            </div>
+</div>
     <div class="second-container">
     <div class="one">
         <h1>Your Task's</h1>
-        <button><i class="fa-solid fa-plus"></i>Add Task</button>
+        <div class="buttons">
+           <button><i class="fa-solid fa-plus"></i>Add Task</button>
+           <button id="clear-all"><i class="fa-solid fa-trash" style="color: #f0f2f5;"></i>Clear All</button>
+        </div>
+        
     </div>
     <div class="get_input">
     
@@ -48,13 +69,66 @@
     margin: 0;
     box-sizing: border-box;
 }
+#clear-all
+{
+    background-color: red;
+    color:white;
+}
+.dashboard {
+    display:flex;
+    flex-direction: column;
+    padding: 20px;
+    margin: 50px;
+    border:1px solid black;
+    background-color: white;
+    border:none;
+    box-shadow:1px 0.1px 2px 0.1px rgba(0,0,0,0.2);
+}
+.dashboard h1 {
+    color:blue;
+    text-align: center;
+}
+.box {
+    border:1px solid black;
+    width:200px;
+    height:70px;
+    border-radius: 10px;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+#values
+{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top:10px;
+}
+#box1 {
+   background-color: rgba(0, 0, 255, 0.284);
+   border:none;
+}
+#box2 {
+   background-color: rgba(0, 255, 98, 0.24);
+   border:none;
+   
+}
+#box3 {
+   background-color: rgba(191, 255, 0, 0.318);
+   border:none;
+}
 
 body {
     background-color: rgb(212, 218, 229);
     min-height: 100vh;
     font-family: Arial, sans-serif;
 }
-
+.buttons
+{
+    display:flex;
+    gap:10px;
+}
 /* Container (Header Row) */
 .container {
     display: flex;
@@ -248,6 +322,7 @@ const app = initializeApp(appSetting)
 const database = getDatabase(app)
 const name_db = ref(database,"users")
 const datas_db = ref(database,"datas")
+const status_db = ref(database,"status")
    let a = new Date()
    let i = document.querySelector('#content i'); 
 if (a.getHours() >= 12) {
@@ -271,18 +346,45 @@ if (a.getHours() >= 12) {
      }
     })
 let accountSelect = document.querySelector('#account');
-
+let email = localStorage.getItem("email")
 accountSelect.addEventListener('change', (e) => {
+    const tasks = parseInt(document.querySelector('#task').innerHTML) || 0;
+    const completed = parseInt(document.querySelector('#completed').innerHTML) || 0;
+    const pending = parseInt(document.querySelector('#pending').innerHTML) || 0;
     if (e.target.value === "Logout") {
+        const status_datas = {
+            user_email : email,
+            user_tasks:tasks,
+            user_completed:completed,
+            user_pending:pending
+        }
+        push(status_db,status_datas);
         alert("Logout successfully!!!");
         window.location.href = "signin.html";
     }
 });
-
-//const datas_db = ref(database,"datas")
+ onValue(status_db, (snapshot) => {
+    getInputContainer.innerHTML = ""; 
+   if (snapshot.exists()) {
+        let datas = snapshot.val()
+        let tasks = document.querySelector('#task')
+        let completed= document.querySelector('#completed')
+        let pending = document.querySelector('#pending')
+        for(let key in datas)
+        {
+            if(datas[key].user_email===email)
+            {
+                 tasks.innerHTML = datas[key].user_tasks;
+                 completed.innerHTML = datas[key].user_completed;
+                 pending.innerHTML = datas[key].user_pending;
+            }
+        }
+   }
+}
+ )
 let add_btn = document.querySelector('button')
 let getInputContainer = document.querySelector('.get_input');
-const emails = localStorage.getItem("email");
+const emails = email;
 add_btn.addEventListener('click',(e)=>
 {
     e.preventDefault()
@@ -339,17 +441,26 @@ add_btn.addEventListener('click',(e)=>
 }
 )
 })
+
 onValue(datas_db, (snapshot) => {
+    let pending = 0;
+    let task_count = 0;
     getInputContainer.innerHTML = ""; 
    if (snapshot.exists()) {
      const users = snapshot.val();
      for(let key in users)
      {
-        if(users[key].useremail === emails)
-        {
+        if(users[key].useremail === email)
+        {   
+            pending +=1 
+            task_count=task_count+1;
             createTaskElement(users[key].usertask,key);
         }
      }
+     let val = document.querySelector('#task')
+     val.innerHTML = task_count;
+     let pen = document.querySelector('#pending')
+     pen.innerHTML = pending 
 }
 }
 
@@ -395,8 +506,43 @@ function createTaskElement(taskValue,keys)
         input_field.focus();            
         editIcon.style.color = "orange"; 
     })
-    
 
+    confirmIcon.addEventListener('dblclick', () => {
+        let pending = document.querySelector('#pending');
+        let completed = document.querySelector('#completed');
+    if (input_field.style.textDecoration === "line-through") {
+            pending.innerHTML = parseInt(pending.innerHTML)+1 
+            completed.innerHTML = parseInt(completed.innerHTML)-1
+            input_field.style.textDecoration = "none"; 
+    } else {
+         pending.innerHTML = parseInt(pending.innerHTML)-1 
+        completed.innerHTML = parseInt(completed.innerHTML)+1
+
+        input_field.style.textDecoration = "line-through"; 
+    }
+});
+let clear_all_button = document.querySelector('#clear-all')
+clear_all_button.addEventListener('click',()=>
+{
+    onValue(datas_db, (snapshot) => {
+    getInputContainer.innerHTML = ""; 
+   if (snapshot.exists()) {
+     const users = snapshot.val();
+     for(let key in users)
+     {
+        if(users[key].useremail === email)
+        {
+           
+             remove(ref(database, "datas/" + key));
+        }
+     }
+     let val = document.querySelector('#task')
+     val.innerHTML = 0
+      
+}
+})
+}
+)
     taskWrapper.appendChild(input_field);
     taskWrapper.appendChild(confirmIcon);
     taskWrapper.appendChild(trashIcon);
@@ -405,6 +551,21 @@ function createTaskElement(taskValue,keys)
     getInputContainer.appendChild(taskWrapper);
 
 }
+
+   
+    onValue(status_db, (snapshot) => {
+        let found = false;
+
+        if (snapshot.exists()) {
+            const users = snapshot.val();
+            const username = localStorage.getItem("username");
+          if (username) {
+               document.querySelector("b").textContent = username;
+               document.querySelector("#account1").innerHTML = username;
+            }
+
+     }
+    })
 </script>
 
 
