@@ -63,15 +63,80 @@
 </body>
 </html>
 <style>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <div id="content"> 
+            <i>Good Morning</i>
+            <b>Dharineesh</b>
+        </div>
 
+        <div>
+            <h1>Todo List</h1>
+        </div>
+        
+    <div class="account-box">
+   <i class="fa-solid fa-circle-user"></i>
+     <select name="account" id="account">
+       <option id="account1"></option>
+       <option value="Logout" id="logout">Logout</option>
+   </select>
+</div>
+</div>
+<div class="dashboard">
+            <h1>Dashboard</h1>
+            <div id="values">
+                 <div class="box" id="box1">
+                      <p>Your Tasks</p>
+                      <b id="task">0</b>
+                 </div>
+                 <div class="box" id="box2">
+                     <p>Completed</p>
+                     <b id="completed">0</b>
+                 </div>
+                 <div class="box" id="box3">
+                    <p>Pending</p>
+                    <b id="pending">0</b>
+                 </div>
+            </div>
+</div>
+    <div class="second-container">
+    <div class="one">
+        <h1>Your Task's</h1>
+        <div class="buttons">
+           <button id="add"><i class="fa-solid fa-plus"></i>Add Task</button>
+           <button id="clear-all"><i class="fa-solid fa-trash" style="color: #f0f2f5;"></i>Clear All</button>
+        </div>
+        
+    </div>
+    <div class="get_input">
+    
+    </div>
+    <div class="two">
+            
+        </div>
+        
+    </div>
+   
+   
+</body>
+</html>
+<style>
 /* Base Styles */
 * {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
 }
-select{
-    border:none;
+
+select {
+    border: none;
 }
 
 body {
@@ -137,11 +202,11 @@ i {
     justify-content: space-between;
     gap: 15px;
     margin-top: 10px;
-    flex-wrap: wrap; /* wrap boxes if screen is too small */
+    flex-wrap: wrap;
 }
 
 .box {
-    flex: 1 1 30%; /* grow/shrink, min 30% of container */
+    flex: 1 1 30%;
     min-width: 120px;
     border-radius: 10px;
     display: flex;
@@ -150,13 +215,8 @@ i {
     align-items: center;
     height: 70px;
 }
-#clearall i {
-    color:white;
-}
-.fa-solid.fa-plus
-{
-    color:white;
-}
+
+/* Box Colors */
 #box1 { background-color: rgba(0, 0, 255, 0.284); }
 #box2 { background-color: rgba(0, 255, 98, 0.24); }
 #box3 { background-color: rgba(191, 255, 0, 0.318); }
@@ -165,7 +225,7 @@ i {
 .second-container {
     margin: 20px auto;
     padding: 20px;
-    max-width: 1200px; /* same width as dashboard */
+    max-width: 1200px;
     background-color: white;
     box-shadow: 1px 0.1px 2px 0.1px rgba(0,0,0,0.2);
     border-radius: 5px;
@@ -177,7 +237,7 @@ i {
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    flex-wrap: wrap; /* allow wrapping on very small screens */
+    flex-wrap: wrap;
 }
 
 .one h1 {
@@ -188,7 +248,7 @@ i {
 .buttons {
     display: flex;
     gap: 10px;
-    flex-wrap: wrap; /* keep buttons visible on small screens */
+    flex-wrap: wrap;
 }
 
 .buttons button {
@@ -281,15 +341,16 @@ input.task-input {
     }
 }
 
+/* Mobile: stack dashboard boxes vertically */
 @media screen and (max-width: 480px) {
 
     #values {
-        flex-direction: column; /* stack boxes vertically on very small screens */
+        flex-direction: column; /* stack boxes vertically */
         gap: 10px;
     }
 
     .one {
-        flex-direction: column; /* stack title and buttons if needed */
+        flex-direction: column;
         align-items: flex-start;
     }
 
@@ -302,7 +363,286 @@ input.task-input {
         width: 48%;
     }
 
+    .container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .account-box {
+        margin-top: 10px;
+    }
 }
+
+</style>
+
+<script src="https://kit.fontawesome.com/6045d1d2eb.js" crossorigin="anonymous"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+import { getDatabase, ref, push, onValue,set,remove } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
+
+let appSetting = {
+    databaseURL: "https://to-do-list-51c07-default-rtdb.firebaseio.com/"
+}
+const app = initializeApp(appSetting)
+const database = getDatabase(app)
+const name_db = ref(database,"users")
+const datas_db = ref(database,"datas")
+const status_db = ref(database,"status")
+   let a = new Date()
+   let i = document.querySelector('#content i'); 
+if (a.getHours() >= 12) {
+   i.innerHTML = "Good Evening";
+} else {
+   i.innerHTML = "Good Morning";
+}
+
+   
+    onValue(name_db, (snapshot) => {
+        let found = false;
+
+        if (snapshot.exists()) {
+            const users = snapshot.val();
+            const username = localStorage.getItem("username");
+          if (username) {
+               document.querySelector("b").textContent = username;
+               document.querySelector("#account1").innerHTML = username;
+            }
+
+     }
+    })
+let accountSelect = document.querySelector('#account');
+let email = localStorage.getItem("email")
+accountSelect.addEventListener('change', (e) => {
+    const tasks = parseInt(document.querySelector('#task').innerHTML) || 0;
+    const completed = parseInt(document.querySelector('#completed').innerHTML) || 0;
+    const pending = parseInt(document.querySelector('#pending').innerHTML) || 0;
+    if (e.target.value === "Logout") {
+        const status_datas = {
+            user_email : email,
+            user_tasks:tasks,
+            user_completed:completed,
+            user_pending:pending
+        }
+        push(status_db,status_datas);
+        alert("Logout successfully!!!");
+        window.location.href = "signin.html";
+    }
+});
+ onValue(status_db, (snapshot) => {
+    getInputContainer.innerHTML = ""; 
+   if (snapshot.exists()) {
+        let datas = snapshot.val()
+        let tasks = document.querySelector('#task')
+        let completed= document.querySelector('#completed')
+        let pending = document.querySelector('#pending')
+        for(let key in datas)
+        {
+            if(datas[key].user_email===email)
+            {
+                 tasks.innerHTML = datas[key].user_tasks;
+                 completed.innerHTML = datas[key].user_completed;
+                 pending.innerHTML = datas[key].user_pending;
+            }
+        }
+   }
+}
+ )
+let add_btn = document.querySelector('button')
+let getInputContainer = document.querySelector('.get_input');
+const emails = email;
+add_btn.addEventListener('click',(e)=>
+{
+    e.preventDefault()
+
+    const taskWrapper = document.createElement('div');
+    taskWrapper.style.display = "flex";
+    taskWrapper.style.alignItems = "center";
+    taskWrapper.style.gap = "10px";
+    taskWrapper.style.marginTop = "10px";
+
+
+   const input_field = document.createElement('input')
+   input_field.type="text"
+   input_field.placeholder = "Enter The Task..."
+   input_field.classList.add("task-input")
+   
+    const confirmIcon = document.createElement('i');
+    confirmIcon.className = "fa-solid fa-circle-check";
+    confirmIcon.style.color = "#39df0c";
+    confirmIcon.style.marginLeft = "10px";
+    confirmIcon.style.cursor = "pointer";
+    //<i class="fa-solid fa-circle-check" style="color: #39df0c;"></i>
+    const trashIcon = document.createElement('i');
+    trashIcon.className = "fa-solid fa-trash";
+    trashIcon.style.color = "red";
+    trashIcon.style.marginLeft = "10px";
+    trashIcon.style.cursor = "pointer";
+
+    const editIcon = document.createElement('i')
+    editIcon.className = "fa-solid fa-square-pen"
+    editIcon.style.color = "green";
+    editIcon.marginLeft = "10px";
+    editIcon.style.cursor = "pointer";
+
+
+    taskWrapper.appendChild(input_field);
+    taskWrapper.appendChild(confirmIcon);
+    taskWrapper.appendChild(trashIcon);
+    taskWrapper.appendChild(editIcon);
+
+    getInputContainer.appendChild(taskWrapper);
+
+  
+    confirmIcon.addEventListener('click', () => {
+    const taskValue = input_field.value; // get value from the current input
+ 
+    const details= {
+        useremail : emails,
+        usertask: taskValue
+    }
+     push(datas_db,details)
+}
+)
+})
+
+onValue(datas_db, (snapshot) => {
+    let pending = 0;
+    let task_count = 0;
+    
+    getInputContainer.innerHTML = ""; 
+    let found = false;
+   if (snapshot.exists()) {
+     const users = snapshot.val();
+     for(let key in users)
+     {
+        if(users[key].useremail === email)
+        {   
+            found=true;
+            pending +=1 
+            task_count=task_count+1;
+            createTaskElement(users[key].usertask,key);
+        }
+        
+     }
+     if(!found)
+     {
+        getInputContainer.innerHTML = "No Records Found."; 
+     }
+     let val = document.querySelector('#task')
+     val.innerHTML = task_count;
+     let pen = document.querySelector('#pending')
+     pen.innerHTML = pending 
+     
+}
+}
+
+);
+let clear_all_button = document.querySelector('#clear-all');
+
+clear_all_button.addEventListener('click', () => {
+    // Remove all tasks for the current user from database
+    onValue(datas_db, (snapshot) => {
+        if (snapshot.exists()) {
+            const users = snapshot.val();
+            for (let key in users) {
+                if (users[key].useremail === email) {
+                    remove(ref(database, "datas/" + key));
+                }
+            }
+        }
+    }, { onlyOnce: true }); // only trigger once
+
+    // Clear input container and reset counters
+    getInputContainer.innerHTML = "";
+    document.querySelector('#task').innerHTML = 0;
+    document.querySelector('#pending').innerHTML = 0;
+    document.querySelector('#completed').innerHTML = 0;
+});
+
+
+function createTaskElement(taskValue,keys)
+{
+     const taskWrapper = document.createElement('div');
+    taskWrapper.style.display = "flex";
+    taskWrapper.style.alignItems = "center";
+    taskWrapper.style.gap = "10px";
+    taskWrapper.style.marginTop = "10px";
+
+    const input_field = document.createElement('input');
+    input_field.type = "text";
+    input_field.value = taskValue;
+    input_field.classList.add("task-input");
+    input_field.disabled = true; // make readonly initially
+
+    const confirmIcon = document.createElement('i');
+    confirmIcon.className = "fa-solid fa-circle-check";
+    confirmIcon.style.color = "#39df0c";
+    confirmIcon.style.cursor = "pointer";
+
+    const trashIcon = document.createElement('i');
+    trashIcon.className = "fa-solid fa-trash";
+    trashIcon.style.color = "red";
+    trashIcon.style.cursor = "pointer";
+
+    const editIcon = document.createElement('i');
+    editIcon.className = "fa-solid fa-square-pen";
+    editIcon.style.color = "green";
+    editIcon.style.cursor = "pointer";
+
+    trashIcon.addEventListener('click', () => {
+        remove(ref(database, "datas/" + keys));
+        taskWrapper.remove();
+    });
+  
+    editIcon.addEventListener('click',()=>
+    {
+        input_field.disabled = false;   
+        input_field.focus();            
+        editIcon.style.color = "orange"; 
+    })
+
+    confirmIcon.addEventListener('dblclick', () => {
+        let pending = document.querySelector('#pending');
+        let completed = document.querySelector('#completed');
+    if (input_field.style.textDecoration === "line-through") {
+            pending.innerHTML = parseInt(pending.innerHTML)+1 
+            completed.innerHTML = parseInt(completed.innerHTML)-1
+            input_field.style.textDecoration = "none"; 
+    } else {
+         pending.innerHTML = parseInt(pending.innerHTML)-1 
+        completed.innerHTML = parseInt(completed.innerHTML)+1
+
+        input_field.style.textDecoration = "line-through"; 
+    }
+});
+
+
+
+
+    taskWrapper.appendChild(input_field);
+    taskWrapper.appendChild(confirmIcon);
+    taskWrapper.appendChild(trashIcon);
+    taskWrapper.appendChild(editIcon);
+
+    getInputContainer.appendChild(taskWrapper);
+}
+
+    onValue(status_db, (snapshot) => {
+        let found = false;
+
+        if (snapshot.exists()) {
+            const users = snapshot.val();
+            const username = localStorage.getItem("username");
+          if (username) {
+               document.querySelector("b").textContent = username;
+               document.querySelector("#account1").innerHTML = username;
+            }
+
+     }
+    })
+</script>
+
+
 
 
 
@@ -574,6 +914,7 @@ function createTaskElement(taskValue,keys)
      }
     })
 </script>
+
 
 
 
