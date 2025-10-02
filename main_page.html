@@ -428,9 +428,7 @@ add_btn.addEventListener('click',(e)=>
   
     confirmIcon.addEventListener('click', () => {
     const taskValue = input_field.value; // get value from the current input
-     // make sure this is set somewhere
-    console.log("Task:", taskValue);
-    console.log("Email:", emails);
+ 
     const details= {
         useremail : emails,
         usertask: taskValue
@@ -443,26 +441,57 @@ add_btn.addEventListener('click',(e)=>
 onValue(datas_db, (snapshot) => {
     let pending = 0;
     let task_count = 0;
+    
     getInputContainer.innerHTML = ""; 
+    let found = false;
    if (snapshot.exists()) {
      const users = snapshot.val();
      for(let key in users)
      {
         if(users[key].useremail === email)
         {   
+            found=true;
             pending +=1 
             task_count=task_count+1;
             createTaskElement(users[key].usertask,key);
         }
+        
+     }
+     if(!found)
+     {
+        getInputContainer.innerHTML = "No Records Found."; 
      }
      let val = document.querySelector('#task')
      val.innerHTML = task_count;
      let pen = document.querySelector('#pending')
      pen.innerHTML = pending 
+     
 }
 }
 
 );
+let clear_all_button = document.querySelector('#clear-all');
+
+clear_all_button.addEventListener('click', () => {
+    // Remove all tasks for the current user from database
+    onValue(datas_db, (snapshot) => {
+        if (snapshot.exists()) {
+            const users = snapshot.val();
+            for (let key in users) {
+                if (users[key].useremail === email) {
+                    remove(ref(database, "datas/" + key));
+                }
+            }
+        }
+    }, { onlyOnce: true }); // only trigger once
+
+    // Clear input container and reset counters
+    getInputContainer.innerHTML = "";
+    document.querySelector('#task').innerHTML = 0;
+    document.querySelector('#pending').innerHTML = 0;
+    document.querySelector('#completed').innerHTML = 0;
+});
+
 
 function createTaskElement(taskValue,keys)
 {
@@ -519,38 +548,18 @@ function createTaskElement(taskValue,keys)
         input_field.style.textDecoration = "line-through"; 
     }
 });
-let clear_all_button = document.querySelector('#clear-all')
-clear_all_button.addEventListener('click',()=>
-{
-    onValue(datas_db, (snapshot) => {
-    getInputContainer.innerHTML = ""; 
-   if (snapshot.exists()) {
-     const users = snapshot.val();
-     for(let key in users)
-     {
-        if(users[key].useremail === email)
-        {
-           
-             remove(ref(database, "datas/" + key));
-        }
-     }
-     let val = document.querySelector('#task')
-     val.innerHTML = 0
-      
-}
-})
-}
-)
+
+
+
+
     taskWrapper.appendChild(input_field);
     taskWrapper.appendChild(confirmIcon);
     taskWrapper.appendChild(trashIcon);
     taskWrapper.appendChild(editIcon);
 
     getInputContainer.appendChild(taskWrapper);
-
 }
 
-   
     onValue(status_db, (snapshot) => {
         let found = false;
 
