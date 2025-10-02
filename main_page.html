@@ -249,14 +249,13 @@ const database = getDatabase(app)
 const name_db = ref(database,"users")
 const datas_db = ref(database,"datas")
    let a = new Date()
-   if(a.getHours()>=12)
-   {
-      let i = document.querySelector('i');
-      i.innerHTML = "Good Evening"
-   }
-   else{
-    i.innerHTML = "Good Morning"
-   }
+   let i = document.querySelector('#content i'); 
+if (a.getHours() >= 12) {
+   i.innerHTML = "Good Evening";
+} else {
+   i.innerHTML = "Good Morning";
+}
+
    
     onValue(name_db, (snapshot) => {
         let found = false;
