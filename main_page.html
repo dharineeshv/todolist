@@ -376,6 +376,9 @@ input.task-input {
     .box {
         width: 100%; /* fit container */
     }
+    option {
+        border:none;
+    }
 }
 
 
@@ -504,45 +507,41 @@ add_btn.addEventListener('click',(e)=>
  
     const details= {
         useremail : emails,
-        usertask: taskValue
+        usertask: taskValue,
+        completed: false
     }
      push(datas_db,details)
 }
 )
-})
-
+});
 onValue(datas_db, (snapshot) => {
     let pending = 0;
     let task_count = 0;
-    
+
     getInputContainer.innerHTML = ""; 
     let found = false;
-   if (snapshot.exists()) {
-     const users = snapshot.val();
-     for(let key in users)
-     {
-        if(users[key].useremail === email)
-        {   
-            found=true;
-            pending +=1 
-            task_count=task_count+1;
-            createTaskElement(users[key].usertask,key);
-        }
-        
-     }
-     if(!found)
-     {
-        getInputContainer.innerHTML = "No Records Found."; 
-     }
-     let val = document.querySelector('#task')
-     val.innerHTML = task_count;
-     let pen = document.querySelector('#pending')
-     pen.innerHTML = pending 
-     
-}
-}
 
-);
+    if (snapshot.exists()) {
+        const users = snapshot.val();
+        for (let key in users) {
+            if (users[key].useremail === email) {   
+                found = true;
+                if (!users[key].completed) pending += 1;
+                task_count += 1;
+                createTaskElement(users[key].usertask, key, users[key].completed);
+            }
+        }
+
+        if (!found) getInputContainer.innerHTML = "No Records Found.";
+
+        document.querySelector('#task').innerHTML = task_count;
+        document.querySelector('#pending').innerHTML = pending;
+        document.querySelector('#completed').innerHTML = task_count - pending;
+    }
+});
+
+
+   
 let clear_all_button = document.querySelector('#clear-all');
 
 clear_all_button.addEventListener('click', () => {
@@ -565,10 +564,8 @@ clear_all_button.addEventListener('click', () => {
     document.querySelector('#completed').innerHTML = 0;
 });
 
-
-function createTaskElement(taskValue,keys)
-{
-     const taskWrapper = document.createElement('div');
+function createTaskElement(taskValue, key, completed) {
+    const taskWrapper = document.createElement('div');
     taskWrapper.style.display = "flex";
     taskWrapper.style.alignItems = "center";
     taskWrapper.style.gap = "10px";
@@ -578,11 +575,16 @@ function createTaskElement(taskValue,keys)
     input_field.type = "text";
     input_field.value = taskValue;
     input_field.classList.add("task-input");
-    input_field.disabled = true; // make readonly initially
+    input_field.disabled = true;
+
+    // Apply line-through if completed
+    if (completed) {
+        input_field.style.textDecoration = "line-through";
+    }
 
     const confirmIcon = document.createElement('i');
     confirmIcon.className = "fa-solid fa-circle-check";
-    confirmIcon.style.color = "#39df0c";
+    confirmIcon.style.color = completed ? "#39df0c" : "#39df0c";
     confirmIcon.style.cursor = "pointer";
 
     const trashIcon = document.createElement('i');
@@ -595,35 +597,38 @@ function createTaskElement(taskValue,keys)
     editIcon.style.color = "green";
     editIcon.style.cursor = "pointer";
 
+    // Trash event
     trashIcon.addEventListener('click', () => {
-        remove(ref(database, "datas/" + keys));
+        remove(ref(database, "datas/" + key));
         taskWrapper.remove();
     });
-  
-    editIcon.addEventListener('click',()=>
-    {
+
+    // Edit event
+    editIcon.addEventListener('click', () => {
         input_field.disabled = false;   
         input_field.focus();            
         editIcon.style.color = "orange"; 
-    })
+    });
 
+    // Confirm (toggle completed) event
     confirmIcon.addEventListener('dblclick', () => {
-        let pending = document.querySelector('#pending');
-        let completed = document.querySelector('#completed');
-    if (input_field.style.textDecoration === "line-through") {
-            pending.innerHTML = parseInt(pending.innerHTML)+1 
-            completed.innerHTML = parseInt(completed.innerHTML)-1
-            input_field.style.textDecoration = "none"; 
-    } else {
-         pending.innerHTML = parseInt(pending.innerHTML)-1 
-        completed.innerHTML = parseInt(completed.innerHTML)+1
+        let pendingElem = document.querySelector('#pending');
+        let completedElem = document.querySelector('#completed');
+        let isCompleted = input_field.style.textDecoration === "line-through";
 
-        input_field.style.textDecoration = "line-through"; 
-    }
-});
+        input_field.style.textDecoration = isCompleted ? "none" : "line-through";
 
+        // Update counts
+        pendingElem.innerHTML = parseInt(pendingElem.innerHTML) + (isCompleted ? 1 : -1);
+        completedElem.innerHTML = parseInt(completedElem.innerHTML) + (isCompleted ? -1 : 1);
 
-
+        // Update database
+        set(ref(database, "datas/" + key), {
+            useremail: emails,
+            usertask: input_field.value,
+            completed: !isCompleted
+        });
+    });
 
     taskWrapper.appendChild(input_field);
     taskWrapper.appendChild(confirmIcon);
