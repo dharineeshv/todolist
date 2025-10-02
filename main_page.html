@@ -388,6 +388,14 @@ function createTaskElement(taskValue,keys)
         remove(ref(database, "datas/" + keys));
         taskWrapper.remove();
     });
+  
+    editIcon.addEventListener('click',()=>
+    {
+        input_field.disabled = false;   
+        input_field.focus();            
+        editIcon.style.color = "orange"; 
+    })
+    
 
     taskWrapper.appendChild(input_field);
     taskWrapper.appendChild(confirmIcon);
