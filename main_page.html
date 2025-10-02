@@ -45,7 +45,7 @@
     <div class="one">
         <h1>Your Task's</h1>
         <div class="buttons">
-           <button><i class="fa-solid fa-plus"></i>Add Task</button>
+           <button id="add"><i class="fa-solid fa-plus"></i>Add Task</button>
            <button id="clear-all"><i class="fa-solid fa-trash" style="color: #f0f2f5;"></i>Clear All</button>
         </div>
         
@@ -70,57 +70,12 @@
     margin: 0;
     box-sizing: border-box;
 }
-
+select{
+    border:none;
+}
 #clear-all {
     background-color: red;
     color: white;
-}
-
-.dashboard {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    margin: 50px;
-    border: 1px solid black;
-    background-color: white;
-    border: none;
-    box-shadow: 1px 0.1px 2px 0.1px rgba(0,0,0,0.2);
-}
-
-.dashboard h1 {
-    color: blue;
-    text-align: center;
-}
-
-.box {
-    border: 1px solid black;
-    width: 200px;
-    height: 70px;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-#values {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    margin-top: 10px;
-}
-
-#box1 {
-   background-color: rgba(0, 0, 255, 0.284);
-   border: none;
-}
-#box2 {
-   background-color: rgba(0, 255, 98, 0.24);
-   border: none;
-}
-#box3 {
-   background-color: rgba(191, 255, 0, 0.318);
-   border: none;
 }
 
 body {
@@ -129,57 +84,81 @@ body {
     font-family: Arial, sans-serif;
 }
 
-.buttons {
-    display: flex;
-    gap: 10px;
+i {
+    color: blue;
 }
 
-/* Container (Header Row) */
+/* Header Container */
 .container {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: center; /* vertically center items */
+    align-items: center;
     padding: 20px;
     margin: 50px;
     background-color: white;
     box-shadow: 1px 0.1px 2px 0.1px rgba(0,0,0,0.2);
     border-radius: 5px;
-    flex-wrap: nowrap; /* prevent wrapping */
     gap: 10px;
+    flex-wrap: nowrap; /* prevent wrapping */
 }
 
 #content {
     display: flex;
     flex-direction: column;
-    flex-shrink: 1; /* allow shrinking to fit smaller screens */
-    min-width: 0; /* prevent overflowing */
-}
-
-i {
-    color: blue;
-}
-
-.container h1 {
-    color: blue;
 }
 
 .account-box {
     display: flex;
     align-items: center;
     gap: 5px;
-    flex-shrink: 0; /* prevent shrinking too much */
-    min-width: 120px; /* minimum width for dropdown */
     padding: 7px;
     background-color: white;
     box-shadow: 1px 0.1px 2px 0.1px rgba(0,0,0,0.2);
     border-radius: 4px;
+    flex-shrink: 0;
 }
 
-select {
-    border: none;
-    background: none;
+/* Dashboard */
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    margin: 50px;
+    background-color: white;
+    box-shadow: 1px 0.1px 2px 0.1px rgba(0,0,0,0.2);
+    border-radius: 5px;
 }
+
+.dashboard h1 {
+    color: blue;
+    text-align: center;
+}
+
+#values {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 10px;
+    flex-wrap: nowrap; /* prevent wrapping on mobile */
+    overflow-x: auto;
+}
+
+.box {
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 70px;
+    flex: 1; /* equal width */
+    min-width: 100px; /* prevent too small on mobile */
+}
+
+#box1 { background-color: rgba(0, 0, 255, 0.284); }
+#box2 { background-color: rgba(0, 255, 98, 0.24); }
+#box3 { background-color: rgba(191, 255, 0, 0.318); }
 
 /* Second Container */
 .second-container {
@@ -190,11 +169,36 @@ select {
     border-radius: 5px;
 }
 
+/* Buttons Row */
 .one {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 10px;
+    flex-wrap: nowrap; /* keep buttons in single row */
+}
+
+.one h1 {
+    flex: 1; /* push buttons to right */
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: nowrap; /* prevent wrapping */
+}
+
+.buttons button {
+    flex: 1; /* equal width */
+    min-width: 120px;
+}
+
+/* Task Section */
+.get_input {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
 }
 
 .two {
@@ -209,9 +213,6 @@ select {
 
 /* Button Styles */
 button {
-    background-color: blue;
-    border: none;
-    width: 120px;
     padding: 10px;
     border-radius: 5px;
     color: white;
@@ -220,12 +221,16 @@ button {
     align-items: center;
     gap: 10px;
     cursor: pointer;
+    border: none;
 }
 
 button i {
     color: white;
 }
-
+#add
+{
+    background-color: blue;
+}
 /* Input fields */
 input.task-input {
     padding: 10px;
@@ -242,100 +247,52 @@ input.task-input {
     font-size: 1.2rem;
 }
 
-/* Responsive for tablets */
-@media screen and (max-width: 768px) {
+/* Responsive for mobile phones */
+@media screen and (max-width: 480px) {
+
     .container {
-        flex-direction: row; /* keep first row in one line */
-        margin: 20px;
-        padding: 15px;
+        margin: 10px;
+        padding: 10px;
+        gap: 5px;
     }
 
     #content {
-        margin-bottom: 0; /* remove bottom margin */
-    }
-
-    .one {
-        flex-direction: column;
-        gap: 10px;
-        align-items: flex-start;
-    }
-
-    button {
-        width: 100%;
-    }
-
-    .get_input {
-        flex-direction: column;
-        width: 100%;
-    }
-
-    input.task-input {
-        width: 100%;
+        flex: 1;
     }
 
     .account-box {
-        flex-direction: row; /* keep icon + select in row */
-        align-items: center;
+        min-width: 100px;
     }
 
-    select {
-        width: auto; /* allow shrinking */
-    }
-}
-
-/* Responsive for mobile phones */
-@media screen and (max-width: 480px) {
-    h1 {
-        font-size: 1rem;
-    }
-
-    button {
-        font-size: 0.9rem;
-        padding: 8px;
-    }
-
-    input.task-input {
-        font-size: 0.9rem;
-        padding: 8px;
-    }
-
-    .fa-solid {
-        font-size: 1rem;
-    }
-
-    .container, .second-container {
+    .dashboard {
         margin: 10px;
-        padding: 10px;
+        padding: 15px;
     }
 
-    .one, .two {
-        gap: 8px;
-    }
-
-    /* Keep dashboard boxes in a single row */
     #values {
-        flex-direction: row;
-        justify-content: space-between;
         gap: 5px;
-        overflow-x: auto;
     }
 
     .box {
-        flex: 1 0 30%; /* allow shrink but keep roughly equal width */
-        min-width: 100px; /* prevent too small */
+        height: 60px;
+        font-size: 0.9rem;
     }
 
-    /* Keep Add Task + Clear All buttons in same row */
-    .one .buttons {
-        flex-direction: row;
-        flex-wrap: nowrap;
-        gap: 10px;
-        width: 100%;
-        justify-content: space-between;
+    .second-container {
+        margin: 10px;
+        padding: 15px;
     }
 
-    .one .buttons button {
-        width: 48%; /* roughly half width each */
+    .one h1 {
+        font-size: 1rem;
+    }
+
+    .buttons button {
+        min-width: 100px;
+    }
+
+    .buttons {
+        gap: 5px;
     }
 }
 
