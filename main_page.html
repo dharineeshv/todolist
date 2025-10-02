@@ -42,7 +42,9 @@
         <div class="container-2">
             <div class="progress">
                    <div class="progress-bar"><p>0%</p></div>
+                   
             </div>
+            <p id="progress-status">Completion Progress</p>
         </div>
 
     </div>
@@ -81,8 +83,10 @@
     display: flex;
     justify-content: center; /* center horizontally */
     align-items: center;     /* center vertically (optional) */
-    margin-top: 20px;        /* spacing from above */
+    margin-top: 40px;        /* spacing from above */
     width: 100%;
+    flex-direction: column;
+    
 }
 .progress-bar p 
 {
@@ -145,7 +149,10 @@ i {
     gap: 10px;
     flex-wrap: wrap;
 }
-
+#progress-status 
+{
+    margin-top:10px;
+}
 #content {
     display: flex;
     flex-direction: column;
@@ -200,7 +207,8 @@ i {
 }
 
 /* Box Colors (backgrounds optional for now) */
-#box1 { background-color: #e0f2fe; } /* light blue */
+#box1 { background-color: #e0f2fe; 
+} /* light blue */
 #box2 { background-color: #dcfce7; } /* light green */
 #box3 { background-color: #fef9c3; } /* light yellow */
 
@@ -628,7 +636,7 @@ clear_all_button.addEventListener('click', () => {
     const progressBar = document.querySelector(".progress-bar");
     let value =  parseInt(progressBar.textContent) || 0;
     let current=0
-    let speed = 30;
+    let speed = 20;
     let fill = setInterval(()=>
         {
             if(value<=0)
@@ -643,8 +651,6 @@ clear_all_button.addEventListener('click', () => {
                 
             }
         },speed)
-
-
 });
 
 function createTaskElement(taskValue, key, completed) {
